@@ -10,9 +10,10 @@ pragma solidity ^0.4.18;
 //  $$ | $$$ |$$ |  $$ |$$ | $$$ |$$    $$/
 //  $$/   $$/ $$/   $$/ $$/   $$/  $$$$$$/
 
-// 彡(ﾟ)(ﾟ)
-// 彡(^)(^)
 
+// 彡(^)(^)「NANJのコードできたで～」
+// 彡(ﾟ)(ﾟ)「Solidityってなんや？」
+// 彡(´)(`)「よくわからないンゴ」
 
 
 /**
@@ -152,13 +153,13 @@ contract ERC20 {
 /*
  * NANJ is an ERC20 token with ERC223 Extensions
  */
-contract BasicNANJ is ERC20, Ownable {
+contract NANJ is ERC20, Ownable {
     using SafeMath for uint256;
 
     string public name = "NANJCOINtest";
     string public symbol = "NANJt";
-    uint8  public decimals = 6;
-    uint256 public totalSupply = 30000000000 * (10 ** 6);
+    uint8  public decimals = 8;
+    uint256 public totalSupply = 30000000000 * 10 ** 8;
     bool public tokenCreated = false;
     bool public mintingFinished = false;
 
@@ -172,8 +173,8 @@ contract BasicNANJ is ERC20, Ownable {
     event MintFinished();
 
 
-    // Constructor is called only once and can not be called again (Ethereum Solidity specification)
-    function BasicNANJ(address Itch) public {
+    // Constructor is called only once and can not be called again
+    function NANJ(address Itch) public {
         // Security check in case EVM has future flaw or exploit to call constructor multiple times
         // Ensure token gets created once only
         require(tokenCreated == false);
@@ -210,19 +211,37 @@ contract BasicNANJ is ERC20, Ownable {
 
     /**
      * @notice `freeze? Prevent | Allow` `target` from sending & receiving tokens
-     * @param target Address to be frozen
+     * @param targets Addresses to be frozen
      * @param isFrozen either to freeze it or not
      */
-    function freezeAccount(address target, bool isFrozen) onlyOwner public {
-        frozenAccount[target] = isFrozen;
-        FrozenFunds(target, isFrozen);
+    function freezeAccounts(address[] targets, bool isFrozen) onlyOwner public {
+        require(targets.length > 0);
+
+        for (uint i = 0; i < targets.length; i++) {
+            require(targets[i] != 0x0);
+            frozenAccount[targets[i]] = isFrozen;
+            FrozenFunds(targets[i], isFrozen);
+        }
     }
+
+    mapping (address => uint256) public unlockUnixTime;
+    event LockedFunds(address target, uint256 locked);
+
+    function lockupAccounts(address[] targets, uint[] unixTimes) onlyOwner public{
+        require(targets.length > 0 && targets.length == unixTimes.length);
+        for(uint i = 0; i < targets.length; i++){
+            require(unlockUnixTime[targets[i]] < unixTimes[i]);
+            unlockUnixTime[targets[i]] = unixTimes[i];
+            LockedFunds(targets[i], unixTimes[i]);
+        }
+    }
+
 
 
     // Function that is called when a user or another contract wants to transfer funds
     function transfer(address _to, uint _value, bytes _data, string _custom_fallback) public returns (bool success) {
-        require(!frozenAccount[msg.sender]);
-        require(!frozenAccount[_to]);
+        require(!frozenAccount[msg.sender] && !frozenAccount[_to]);
+        require(now > unlockUnixTime[msg.sender] && now > unlockUnixTime[_to]);
 
         if (isContract(_to)) {
             if (balanceOf[msg.sender] < _value) revert();
@@ -238,8 +257,8 @@ contract BasicNANJ is ERC20, Ownable {
 
     // Function that is called when a user or another contract wants to transfer funds
     function transfer(address _to, uint _value, bytes _data) public  returns (bool success) {
-        require(!frozenAccount[msg.sender]);
-        require(!frozenAccount[_to]);
+        require(!frozenAccount[msg.sender] && !frozenAccount[_to]);
+        require(now > unlockUnixTime[msg.sender] && now > unlockUnixTime[_to]);
 
         if (isContract(_to)) {
             return transferToContract(_to, _value, _data);
@@ -251,8 +270,8 @@ contract BasicNANJ is ERC20, Ownable {
     // Standard function transfer similar to ERC20 transfer with no _data
     // Added due to backwards compatibility reasons
     function transfer(address _to, uint _value) public returns (bool success) {
-        require(!frozenAccount[msg.sender]);
-        require(!frozenAccount[_to]);
+        require(!frozenAccount[msg.sender] && !frozenAccount[_to]);
+        require(now > unlockUnixTime[msg.sender] && now > unlockUnixTime[_to]);
 
         bytes memory empty;
         if (isContract(_to)) {
@@ -389,13 +408,18 @@ contract BasicNANJ is ERC20, Ownable {
     // Function to distribute tokens to list of addresses by the provided amount
     function distributeAirdrop(address[] addresses, uint256 amount) public returns(bool) {
         require(addresses.length > 0);
+        require(!frozenAccount[msg.sender]);
+        require(now > unlockUnixTime[msg.sender]);
 
-        uint256 weiAmount = amount.mul(10 ** 6);
+        uint256 weiAmount = amount.mul(10 ** 8);
         uint256 totalAmount = weiAmount.mul(addresses.length);
         // Only proceed if there are enough tokens to be distributed to all addresses
         require(balanceOf[owner] >= totalAmount);
         for (uint i = 0; i < addresses.length; i++) {
             require(addresses[i] != 0x0);
+            require(!frozenAccount[addresses[i]]);
+            require(now > unlockUnixTime[addresses[i]]);
+
             balanceOf[addresses[i]] = balanceOf[addresses[i]].add(weiAmount);
             Transfer(msg.sender, addresses[i], weiAmount);
         }
@@ -405,18 +429,20 @@ contract BasicNANJ is ERC20, Ownable {
 
 
 
-    uint256 distributeAmount = 25000 * (10 ** 6);
+    uint256 distributeAmount = 25000 * 10 ** 8;
 
     function setDistributeAmount(uint256 newDistributeAmount) onlyOwner public {
-        distributeAmount = newDistributeAmount.mul(10 ** 6);
+        distributeAmount = newDistributeAmount.mul(10 ** 8);
     }
 
     function autoDistribute() internal {
         require(!pauseDistribute);
         require(!frozenAccount[msg.sender]);
+        require(now > unlockUnixTime[msg.sender]);
         require(balanceOf[owner] >= distributeAmount);
         require(msg.value >= 0);
         if(msg.value > 0) owner.transfer(msg.value);
+
         balanceOf[owner] = balanceOf[owner].sub(distributeAmount);
         balanceOf[msg.sender] = balanceOf[msg.sender].add(distributeAmount);
         bytes memory empty;
