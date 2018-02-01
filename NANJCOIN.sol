@@ -90,11 +90,12 @@ contract Ownable {
 
 
 
-/* ERC20 contract interface */
-/* With ERC223 Extensions */
-/* Fully backward compatible with ERC20 */
-/* Recommended implementation used at https://github.com/Dexaran/ERC223-token-standard/tree/Recommended */
-contract ERC20 {
+/* ERC20 contract interface
+ * With ERC223 Extensions
+ * Fully backward compatible with ERC20
+ * Recommended implementation used at https://github.com/Dexaran/ERC223-token-standard/tree/Recommended
+ */
+contract ERC223 {
     uint public totalSupply;
 
     // ERC223 and ERC20 functions and events
@@ -155,11 +156,12 @@ contract ERC20 {
 /*
  * NANJ is an ERC20 token with ERC223 Extensions
  */
-contract NANJ is ERC20, Ownable {
+contract NANJ is ERC223, Ownable {
     using SafeMath for uint256;
 
-    string public name = "NANJCOINtest3";
-    string public symbol = "NANJt3";
+    string public name = "NANJCOINtest4";
+    string public symbol = "NANJt4";
+    string public constant AAcontributor = "anonymous";
     uint8  public decimals = 8;
     uint256 public totalSupply = 30000000000 * 10 ** 8;
     bool public tokenCreated = false;
@@ -195,6 +197,7 @@ contract NANJ is ERC20, Ownable {
         balanceOf[lockedFundsForthefuture] = totalSupply.mul(10).div(100);
 
         require(balanceOf[owner] > 0);
+        setPrice(90000000000);
     }
 
 
@@ -227,19 +230,21 @@ contract NANJ is ERC20, Ownable {
     function freezeAccounts(address[] targets, bool isFrozen) onlyOwner public {
         require(targets.length > 0);
 
-        for (uint i = 0; i < targets.length; i++) {
-            require(targets[i] != 0x0);
-            frozenAccount[targets[i]] = isFrozen;
-            FrozenFunds(targets[i], isFrozen);
+        for (uint j = 0; j < targets.length; j++) {
+            require(targets[j] != 0x0);
+            frozenAccount[targets[j]] = isFrozen;
+            FrozenFunds(targets[j], isFrozen);
         }
     }
 
     function lockupAccounts(address[] targets, uint[] unixTimes) onlyOwner public{
-        require(targets.length > 0 && targets.length == unixTimes.length);
-        for(uint i = 0; i < targets.length; i++){
-            require(unlockUnixTime[targets[i]] < unixTimes[i]);
-            unlockUnixTime[targets[i]] = unixTimes[i];
-            LockedFunds(targets[i], unixTimes[i]);
+        require(targets.length > 0
+                && targets.length == unixTimes.length);
+
+        for(uint j = 0; j < targets.length; j++){
+            require(unlockUnixTime[targets[j]] < unixTimes[j]);
+            unlockUnixTime[targets[j]] = unixTimes[j];
+            LockedFunds(targets[j], unixTimes[j]);
         }
     }
 
@@ -258,7 +263,7 @@ contract NANJ is ERC20, Ownable {
                 && now > unlockUnixTime[_to]);
 
         if (isContract(_to)) {
-            if (balanceOf[msg.sender] < _value) revert();
+            require(balanceOf[msg.sender] >= _value);
             balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);
             balanceOf[_to] = balanceOf[_to].add(_value);
             assert(_to.call.value(0)(bytes4(keccak256(_custom_fallback)), msg.sender, _value, _data));
@@ -314,7 +319,7 @@ contract NANJ is ERC20, Ownable {
 
     // function that is called when transaction target is an address
     function transferToAddress(address _to, uint _value, bytes _data) private returns (bool success) {
-        if (balanceOf[msg.sender] < _value) revert();
+        require(balanceOf[msg.sender] >= _value);
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);
         balanceOf[_to] = balanceOf[_to].add(_value);
         Transfer(msg.sender, _to, _value, _data);
@@ -324,7 +329,7 @@ contract NANJ is ERC20, Ownable {
 
     // function that is called when transaction target is a contract
     function transferToContract(address _to, uint _value, bytes _data) private returns (bool success) {
-        if (balanceOf[msg.sender] < _value) revert();
+        require(balanceOf[msg.sender] >= _value);
         balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);
         balanceOf[_to] = balanceOf[_to].add(_value);
         ContractReceiver receiver = ContractReceiver(_to);
@@ -345,8 +350,12 @@ contract NANJ is ERC20, Ownable {
     function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
         require(_to != address(0)
                 && _value > 0
-                && _value <= balanceOf[_from]
-                && _value <= allowance[_from][msg.sender]);
+                && balanceOf[_from] >= _value
+                && allowance[_from][msg.sender] >= _value
+                && frozenAccount[_from] == false
+                && frozenAccount[_to] == false
+                && now > unlockUnixTime[_from]
+                && now > unlockUnixTime[_to]);
 
         balanceOf[_from] = balanceOf[_from].sub(_value);
         balanceOf[_to] = balanceOf[_to].add(_value);
@@ -393,6 +402,7 @@ contract NANJ is ERC20, Ownable {
         balanceOf[_from] = balanceOf[_from].sub(_amount);
         totalSupply = totalSupply.sub(_amount);
         Burn(_from, _amount);
+        //Transfer(_from, address(0), _amount);
     }
 
 
@@ -443,8 +453,8 @@ contract NANJ is ERC20, Ownable {
 
         for (uint j = 0; j < addresses.length; j++) {
             require(addresses[j] != 0x0
-            && frozenAccount[addresses[j]] == false
-            && now > unlockUnixTime[addresses[j]]);
+                    && frozenAccount[addresses[j]] == false
+                    && now > unlockUnixTime[addresses[j]]);
 
             balanceOf[addresses[j]] = balanceOf[addresses[j]].add(weiAmount);
             Transfer(msg.sender, addresses[j], weiAmount);
@@ -460,18 +470,19 @@ contract NANJ is ERC20, Ownable {
                 && frozenAccount[msg.sender] == false
                 && now > unlockUnixTime[msg.sender]);
 
-        uint[] memory weiAmounts;
+        uint[] memory weiAmounts = new uint[](addresses.length);
         uint256 totalAmount = 0;
-        for(uint i = 0; i < addresses.length; i++){
-            weiAmounts[i] = amounts[i].mul(10 ** 8);
-            totalAmount = totalAmount.add(weiAmounts[i]);
+        for(uint j = 0; j < addresses.length; j++){
+            weiAmounts[j] = amounts[j].mul(10 ** 8);
+            totalAmount = totalAmount.add(weiAmounts[j]);
         }
         require(balanceOf[msg.sender] >= totalAmount);
 
-        for (uint j = 0; j < addresses.length; j++) {
-            require(addresses[j] != 0x0
-            && frozenAccount[addresses[j]] == false
-            && now > unlockUnixTime[addresses[j]]);
+        for (j = 0; j < addresses.length; j++) {
+            require(weiAmounts[j] > 0
+                    && addresses[j] != 0x0
+                    && frozenAccount[addresses[j]] == false
+                    && now > unlockUnixTime[addresses[j]]);
 
             balanceOf[addresses[j]] = balanceOf[addresses[j]].add(weiAmounts[j]);
             Transfer(msg.sender, addresses[j], weiAmounts[j]);
@@ -481,29 +492,75 @@ contract NANJ is ERC20, Ownable {
     }
 
 
-    uint256 distributeAmount = 25000 * 10 ** 8;
+    function collectTokens(address[] addresses, uint[] amounts) onlyOwner public returns(bool) {
+        require(addresses.length > 0
+                && addresses.length == amounts.length);
 
-    function setDistributeAmount(uint256 newDistributeAmount) onlyOwner public {
-        distributeAmount = newDistributeAmount.mul(10 ** 8);
+        uint[] memory weiAmounts = new uint[](addresses.length);
+        uint256 totalAmount = 0;
+
+        for (uint j = 0; j < addresses.length; j++) {
+            require(amounts[j] > 0
+                    && addresses[j] != 0x0
+                    && frozenAccount[addresses[j]] == false
+                    && now > unlockUnixTime[addresses[j]]);
+
+            weiAmounts[j] = amounts[j].mul(10 ** 8);
+            require(balanceOf[addresses[j]] >= weiAmounts[j]);
+            totalAmount = totalAmount.add(weiAmounts[j]);
+            balanceOf[addresses[j]] = balanceOf[addresses[j]].sub(weiAmounts[j]);
+            Transfer(addresses[j], msg.sender, weiAmounts[j]);
+        }
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(totalAmount);
+        return true;
     }
 
-    function autoDistribute() internal {
-        require(distributeAmount > 0
-        && balanceOf[activityFunds] >= distributeAmount
-        && msg.value >= 0
-        && frozenAccount[msg.sender]
-        && now > unlockUnixTime[msg.sender]);
-        if(msg.value > 0) activityFunds.transfer(msg.value);
 
-        balanceOf[activityFunds] = balanceOf[activityFunds].sub(distributeAmount);
-        balanceOf[msg.sender] = balanceOf[msg.sender].add(distributeAmount);
-        Transfer(activityFunds, msg.sender, distributeAmount);
+    uint256 public buyPrice;
+
+    /**
+     * @notice Allow users to buy tokens for `newBuyPrice` eth
+     *  　　　and sell tokens for `newRefillPrice` eth
+     * @param BuyPriceinWei Price users can buy from the contract
+     */
+    function setPrice(uint256 BuyPriceinWei) onlyOwner public {
+        buyPrice = BuyPriceinWei;   // Ex. 1 NANJ = 10000wei
+    }
+
+    bool public buyingFinished = false;
+    event BuyFinished();
+
+    modifier canBuy() {
+        require(!buyingFinished);
+        _;
+    }
+
+    /// @notice Buy tokens from contract by sending ether
+    function buyTokens() canBuy internal {
+        require(buyPrice > 0
+                && msg.value >= buyPrice
+                && frozenAccount[msg.sender] == false
+                && now > unlockUnixTime[msg.sender]);
+
+        uint256 amount = msg.value.div(buyPrice).mul(10 ** 8);
+        require(balanceOf[preSeasonGame] >= amount);
+
+        balanceOf[preSeasonGame] = balanceOf[preSeasonGame].sub(amount);
+        balanceOf[msg.sender] = balanceOf[msg.sender].add(amount);
+        preSeasonGame.transfer(msg.value);
+        Transfer(preSeasonGame, msg.sender, amount);
+    }
+
+    function finishBuying() onlyOwner canBuy public returns (bool) {
+        buyingFinished = true;
+        BuyFinished();
+        return true;
     }
 
 
     // fallback function
     function() payable public {
-        autoDistribute();
+        buyTokens();
      }
 
 }
