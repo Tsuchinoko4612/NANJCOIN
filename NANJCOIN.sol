@@ -206,7 +206,7 @@ contract ERC223 {
 /**
  * 彡(ﾟ)(ﾟ)
  * @title NANJCOIN
- * @author Tsuchinoko
+ * @author Tsuchinoko & NanJ people
  * @dev NANJCOIN is an ERC223 Token with ERC20 functions and events
  *      Fully backward compatible with ERC20
  */
@@ -244,7 +244,7 @@ contract NANJCOIN is ERC223, Ownable {
     function NANJCOIN() public {
         owner = activityFunds;
 
-        balanceOf[owner] = totalSupply.mul(25).div(100);
+        balanceOf[founder] = totalSupply.mul(25).div(100);
         balanceOf[preSeasonGame] = totalSupply.mul(55).div(100);
         balanceOf[activityFunds] = totalSupply.mul(10).div(100);
         balanceOf[lockedFundsForthefuture] = totalSupply.mul(10).div(100);
