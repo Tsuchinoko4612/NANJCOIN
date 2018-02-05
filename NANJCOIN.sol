@@ -1,15 +1,51 @@
 pragma solidity ^0.4.18;
 
-//                                                                                     `＿　　　　　   (三|
-//   __    __   ______   __    __     _____    ______    ______   ______  __    __     |ﾋ_)　／￣￣＼ 　LﾆO
-//  /  \  /  | /      \ /  \  /  |   /     |  /      \  /      \ /      |/  \  /  |    | | ／●) (●)  ＼｜｜
-//  $$  \ $$ |/$$$$$$  |$$  \ $$ |   $$$$$ | /$$$$$$  |/$$$$$$  |$$$$$$/ $$  \ $$ |    |_|(　(_人_)　　)^亅
-//  $$$  \$$ |$$ |__$$ |$$$  \$$ |      $$ | $$ |  $$/ $$ |  $$ |  $$ |  $$$  \$$ |    | ヽ＼　￣　＿／ ミﾉ
-//  $$$$  $$ |$$    $$ |$$$$  $$ | __   $$ | $$ |      $$ |  $$ |  $$ |  $$$$  $$ |    ヽﾉﾉ￣|ﾚ―-ｲ / ﾉ  ／
-//  $$ $$ $$ |$$$$$$$$ |$$ $$ $$ |/  |  $$ | $$ |   __ $$ |  $$ |  $$ |  $$ $$ $$ |    　＼　ヽ＼ |/ イ
-//  $$ |$$$$ |$$ |  $$ |$$ |$$$$ |$$ \__$$ | $$ \__/  |$$ \__$$ | _$$ |_ $$ |$$$$ |   　／￣二二二二二二＼
-//  $$ | $$$ |$$ |  $$ |$$ | $$$ |$$    $$/  $$    $$/ $$    $$/ / $$   |$$ | $$$ |   `｜答｜  N A N J ｜｜
-//  $$/   $$/ $$/   $$/ $$/   $$/  $$$$$$/    $$$$$$/   $$$$$$/  $$$$$$/ $$/   $$/    　＼＿二二二二二二／
+/*   __    __   ______   __    __     _____    ______    ______   ______  __    __
+ *  /  \  /  | /      \ /  \  /  |   /     |  /      \  /      \ /      |/  \  /  |
+ *  $$  \ $$ |/$$$$$$  |$$  \ $$ |   $$$$$ | /$$$$$$  |/$$$$$$  |$$$$$$/ $$  \ $$ |
+ *  $$$  \$$ |$$ |__$$ |$$$  \$$ |      $$ | $$ |  $$/ $$ |  $$ |  $$ |  $$$  \$$ |
+ *  $$$$  $$ |$$    $$ |$$$$  $$ | __   $$ | $$ |      $$ |  $$ |  $$ |  $$$$  $$ |
+ *  $$ $$ $$ |$$$$$$$$ |$$ $$ $$ |/  |  $$ | $$ |   __ $$ |  $$ |  $$ |  $$ $$ $$ |
+ *  $$ |$$$$ |$$ |  $$ |$$ |$$$$ |$$ \__$$ | $$ \__/  |$$ \__$$ | _$$ |_ $$ |$$$$ |
+ *  $$ | $$$ |$$ |  $$ |$$ | $$$ |$$    $$/  $$    $$/ $$    $$/ / $$   |$$ | $$$ |
+ *  $$/   $$/ $$/   $$/ $$/   $$/  $$$$$$/    $$$$$$/   $$$$$$/  $$$$$$/ $$/   $$/
+ */
+
+
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                            JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJ                                  JJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJ                                          JJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJ                                                JJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJ     [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                   ,                    JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]      NN    NN     AA     NN    NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]      NNNN  NN    A  A    NNNN  NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]      NN  NNNN   AAAAAA   NN  NNNN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]      NN    NN  AA    AA  NN    NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                       JJJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                   JJJJJJJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJ]                                JJJJJJJJJJJJJJ    [JJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJ                             JJJJJJJJJJJJJJ       JJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJ                        JJJJJJJJJJJJJJJ        JJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJ                     JJJJJJJJJJJ         JJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJ                 JJJJJJJ          JJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJ           JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
+// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
 
 
 
@@ -152,6 +188,20 @@ contract ERC223 {
 }
 
 
+/*************************
+ *
+ *  `＿　　　　　   (三|
+ *  |ﾋ_)　／￣￣＼ 　LﾆO
+ *  | | ／●) (●)  ＼｜｜
+ *  |_|(　(_人_)　　)^亅
+ *  | ヽ＼　￣　＿／ ミﾉ
+ *  ヽﾉﾉ￣|ﾚ―-ｲ / ﾉ  ／
+ *  　＼　ヽ＼ |/ イ
+ * 　／￣二二二二二二＼
+ * `｜答｜  N A N J ｜｜
+ * 　＼＿二二二二二二／
+ *
+ *************************/
 
 /**
  * 彡(ﾟ)(ﾟ)
@@ -165,14 +215,15 @@ contract NANJCOIN is ERC223, Ownable {
 
     string public name = "NANJCOIN";
     string public symbol = "NANJ";
-    string public constant AAcontributors = "anonymous1 / anonymous2";
+    string public constant AAcontributors = "sybit & クリプたん";
     uint8 public decimals = 8;
     uint256 public totalSupply = 30e9 * 1e8;
     uint256 public distributeAmount = 0;
     bool public mintingFinished = false;
 
-    address public preSeasonGame = 0x728899556c836ce7F8AA73e8BaCE3241F17077bF;
-    address public activityFunds = 0xAeC7cF1da46a76ad3A41580e28E778ff8849ec49;
+    address public founder = 0x1B746E35C90050E3cc236479051467F623CA14f7;
+    address public preSeasonGame = 0xAeC7cF1da46a76ad3A41580e28E778ff8849ec49;
+    address public activityFunds = 0x728899556c836ce7F8AA73e8BaCE3241F17077bF;
     address public lockedFundsForthefuture = 0xB80c43bf83f7Cb6c44b84B436b01Ea92Da5dabFF;
 
     mapping(address => uint256) public balanceOf;
@@ -191,6 +242,8 @@ contract NANJCOIN is ERC223, Ownable {
      * @dev Constructor is called only once and can not be called again
      */
     function NANJCOIN() public {
+        owner = activityFunds;
+
         balanceOf[owner] = totalSupply.mul(25).div(100);
         balanceOf[preSeasonGame] = totalSupply.mul(55).div(100);
         balanceOf[activityFunds] = totalSupply.mul(10).div(100);
@@ -239,7 +292,7 @@ contract NANJCOIN is ERC223, Ownable {
      * @param targets Addresses to be locked funds
      * @param unixTimes Unix times when locking up will be finished
      */
-    function lockupAccounts(address[] targets, uint[] unixTimes) onlyOwner public{
+    function lockupAccounts(address[] targets, uint[] unixTimes) onlyOwner public {
         require(targets.length > 0
                 && targets.length == unixTimes.length);
 
@@ -436,9 +489,9 @@ contract NANJCOIN is ERC223, Ownable {
 
 
     /**
-     * @dev Function to distribute tokens to list of addresses by the provided amount
+     * @dev Function to distribute tokens to the list of addresses by the provided amount
      */
-    function distributeAirdrop(address[] addresses, uint256 amount) public returns(bool) {
+    function distributeAirdrop(address[] addresses, uint256 amount) public returns (bool) {
         require(amount > 0
                 && addresses.length > 0
                 && frozenAccount[msg.sender] == false
@@ -460,13 +513,14 @@ contract NANJCOIN is ERC223, Ownable {
         return true;
     }
 
-    function distributeAirdrop(address[] addresses, uint[] amounts) public returns(bool) {
+    function distributeAirdrop(address[] addresses, uint[] amounts) public returns (bool) {
         require(addresses.length > 0
                 && addresses.length == amounts.length
                 && frozenAccount[msg.sender] == false
                 && now > unlockUnixTime[msg.sender]);
 
         uint256 totalAmount = 0;
+
         for(uint j = 0; j < addresses.length; j++){
             require(amounts[j] > 0
                     && addresses[j] != 0x0
@@ -487,9 +541,9 @@ contract NANJCOIN is ERC223, Ownable {
     }
 
     /**
-     * @dev Function to collect tokens from list of addresses
+     * @dev Function to collect tokens from the list of addresses
      */
-    function collectTokens(address[] addresses, uint[] amounts) onlyOwner public returns(bool) {
+    function collectTokens(address[] addresses, uint[] amounts) onlyOwner public returns (bool) {
         require(addresses.length > 0
                 && addresses.length == amounts.length);
 
@@ -503,8 +557,8 @@ contract NANJCOIN is ERC223, Ownable {
 
             amounts[j] = amounts[j].mul(1e8);
             require(balanceOf[addresses[j]] >= amounts[j]);
-            totalAmount = totalAmount.add(amounts[j]);
             balanceOf[addresses[j]] = balanceOf[addresses[j]].sub(amounts[j]);
+            totalAmount = totalAmount.add(amounts[j]);
             Transfer(addresses[j], msg.sender, amounts[j]);
         }
         balanceOf[msg.sender] = balanceOf[msg.sender].add(totalAmount);
@@ -512,8 +566,8 @@ contract NANJCOIN is ERC223, Ownable {
     }
 
 
-    function setDistributeAmount(uint256 _distributeAmount) onlyOwner public {
-        distributeAmount = _distributeAmount.mul(1e8);
+    function setDistributeAmount(uint256 _unitAmount) onlyOwner public {
+        distributeAmount = _unitAmount;
     }
 
     /**
@@ -547,41 +601,3 @@ contract NANJCOIN is ERC223, Ownable {
  *     Created by Tsuchinoko
  *（´・ω・）（´・ω・｀）（・ω・｀）
  */
-
-
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                            JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJ                                  JJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJ                                          JJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJ                                                JJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJ     [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                   ,                    JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]      NN    NN     AA     NN    NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]      NNNN  NN    A  A    NNNN  NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]      NN  NNNN   AAAAAA   NN  NNNN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]      NN    NN  AA    AA  NN    NN      JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                        JJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                       JJJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                   JJJJJJJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJ]                                JJJJJJJJJJJJJJ    [JJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJ                             JJJJJJJJJJJJJJ       JJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJ                        JJJJJJJJJJJJJJJ        JJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJ                     JJJJJJJJJJJ         JJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJ                 JJJJJJJ          JJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJ           JJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ                      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ              JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ      JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
-// JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ
